@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.caiomorceli.todosimple.model.User;
-import com.caiomorceli.todosimple.repositorie.TaskRepository;
 import com.caiomorceli.todosimple.repositorie.UserRepository;
 
 @Service
@@ -15,9 +14,6 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
    
     public User findById(Long id){
         Optional<User> user = this.userRepository.findById(id);
@@ -31,10 +27,7 @@ public class UserService {
     public User createUser(User user){
         user.setId(null);
 
-        user = this.userRepository.save(user);
-
-        // Caso o usuário seja criado e já sejam atribuídas algumas tasks a ele, pode-se já armazenar as tasks junto.
-        this.taskRepository.saveAll(user.getTasks());
+        user = this.userRepository.save(user);        
 
         return user;
     }
