@@ -45,7 +45,7 @@ public class User {
     @JsonProperty(access = Access.WRITE_ONLY) // Atributo apenas de escrita. A api não retornará esse atributo no json.
     @NotNull(groups = { CreateUser.class, UpdateUser.class })
     @NotEmpty(groups = { CreateUser.class, UpdateUser.class })
-    @Size(groups = { CreateUser.class, UpdateUser.class }, min = 7, max = 50) // O password deve ter no mínimo 7 e no máximo 50 caracteres.
+    @Size(groups = { CreateUser.class, UpdateUser.class }, min = 4, max = 50, message="A senha deve conter no mínimo 4 e no máximo 50 caracteres.") // O password deve ter no mínimo 7 e no máximo 50 caracteres.
     private String password;
 
     @OneToMany(mappedBy = "user")
