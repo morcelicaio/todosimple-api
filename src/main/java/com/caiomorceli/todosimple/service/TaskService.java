@@ -19,7 +19,7 @@ public class TaskService {
     @Autowired
     private UserService userService;
 
-    public Task findById(Long id){
+    public Task findTaskById(Long id){
         Optional<Task> task = taskRepository.findById(id);
 
         return task.orElseThrow(() -> new RuntimeException(
@@ -39,7 +39,7 @@ public class TaskService {
 
     @Transactional
     public Task updateTask(Task task){
-        Task newTask = this.findById(task.getId());
+        Task newTask = this.findTaskById(task.getId());
 
         newTask.setDescription(task.getDescription());
 
@@ -47,7 +47,7 @@ public class TaskService {
     }
 
     public void deleteTask(Long id){
-        Task task = this.findById(id);
+        Task task = this.findTaskById(id);
 
         try{
             this.taskRepository.delete(task);
