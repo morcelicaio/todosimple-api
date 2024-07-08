@@ -33,7 +33,7 @@ public class UserController {
     // Ex: http://localhost:8080/user/1
     @GetMapping("/{id}")
     public ResponseEntity<User> findById(@PathVariable Long id){
-        User user = this.userService.findById(id);
+        User user = this.userService.findUserById(id);
 
         return ResponseEntity.ok().body(user);
     }
