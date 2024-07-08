@@ -35,7 +35,7 @@ public class TaskService {
 
     @Transactional
     public Task createTask(Task task){
-        User user = this.userService.findById(task.getUser().getId());
+        User user = this.userService.findUserById(task.getUser().getId());
 
         task.setId(null);
         task.setUser(user);
