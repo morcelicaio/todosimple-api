@@ -20,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.caiomorceli.todosimple.model.Task;
 import com.caiomorceli.todosimple.service.TaskService;
+import com.caiomorceli.todosimple.service.UserService;
 
 @RestController
 @RequestMapping("/task")
@@ -28,6 +29,9 @@ public class TaskController {
     
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Task> findTaskById(@PathVariable Long id){
@@ -39,6 +43,8 @@ public class TaskController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Task>> findAllTasksByUserId(@PathVariable Long userId){
+        // Caso seja passado um id de usuário que não existe o servidor retorna um erro.
+        this.userService.findUserById(userId);
 
         List<Task> tasks = this.taskService.findAllTasksByUserId(userId);
         
