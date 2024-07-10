@@ -1,18 +1,25 @@
 package com.caiomorceli.todosimple.service;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.caiomorceli.todosimple.model.User;
+import com.caiomorceli.todosimple.model.enums.ProfileEnum;
 import com.caiomorceli.todosimple.repositorie.UserRepository;
 import com.caiomorceli.todosimple.service.exception.DataBindingViolationException;
 import com.caiomorceli.todosimple.service.exception.ObjectNotFoundException;
 
 @Service
 public class UserService {
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
     
     @Autowired
     private UserRepository userRepository;
@@ -29,6 +36,12 @@ public class UserService {
     public User createUser(User user){
         user.setId(null);
 
+        // Criptografa a senha do usuário que será salvo.
+        user.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
+
+        // Define que a criação do usuário terá o perfil de usuário (perfil 2) e não de admin.
+        // Isso evita que um usuário mal intencionado cadastre um usuário com perfil de admin. 
+        user.setProfiles(Stream.of(ProfileEnum.USER.getCode()).collect(Collectors.toSet()));
         user = this.userRepository.save(user);        
 
         return user;
@@ -38,7 +51,8 @@ public class UserService {
     public User updateUser(User user){
         User newUser = this.findUserById(user.getId());
 
-        newUser.setPassword(user.getPassword());
+        // Criptografa a senha do usuário que será atualizado.
+        newUser.setPassword(this.bCryptPasswordEncoder.encode(user.getPassword()));
 
         return this.userRepository.save(newUser);
     }
