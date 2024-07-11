@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestControllerAdvice               // Annotation que avisa o Spring que é uma classe que deve ser inicializa junto do Spring.
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     
-    // @Value busca o valor do arquivo /templates/application.properties
+    // @Value busca o valor do arquivo application.properties
     @Value("${server.error.include-exception}")
     private boolean printStackTrace;
 
