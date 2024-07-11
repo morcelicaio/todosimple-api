@@ -2,18 +2,24 @@ package com.caiomorceli.todosimple.config;
 
 import java.util.Arrays;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.caiomorceli.todosimple.security.JWTUtil;
 
 // Classe de configuração principal de autenticação
 
@@ -21,6 +27,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    UserDetailsService userDetailsService;
+
+    @Autowired
+    private JWTUtil jwtUtil;
     
     // Informa qual é a rota do sistema que é pública (Não precisa de autenticação)
     private static final String[] PUBLIC_MATCHERS = { "/" };
@@ -33,6 +47,12 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpRequest) throws Exception {
 
         httpRequest.cors().and().csrf().disable();
+
+        AuthenticationManagerBuilder authenticationManagerBuilder = httpRequest
+            .getSharedObject(AuthenticationManagerBuilder.class);
+
+        authenticationManagerBuilder.userDetailsService(this.userDetailsService).passwordEncoder(this.bCryptPasswordEncoder());
+        this.authenticationManager = authenticationManagerBuilder.build();
 
         // Qualquer requisição autorizada que faça um match de POST será permitida.
         // E qualquer requisição autorizada (GET/POST/PUT/PATCH/DELETE) para /login será permitida.
