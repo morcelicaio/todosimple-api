@@ -8,4 +8,8 @@ import com.caiomorceli.todosimple.model.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     
+    public User findUserByUsername(String username);
+    
+    //public User findByUsername(String username);
+
 }
