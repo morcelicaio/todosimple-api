@@ -37,7 +37,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         // pega o usuário autenticado e verifica se
         String authorizationHeader = request.getHeader("Authorization");
 
-        if(Objects.nonNull(authorizationHeader) && authorizationHeader.startsWith("bearer")){
+        if(Objects.nonNull(authorizationHeader) && authorizationHeader.startsWith("Bearer")){
             // remove a string 'bearer' que está junto ao token.
             String token = authorizationHeader.substring(7);
 
