@@ -138,18 +138,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
         return ResponseEntity.status(httpStatus).body(errorResponse);
     }
 
-
+    // Quando tentar realizar um acesso com um usuário ou senha errados por exemplo.
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException exception) throws IOException, ServletException {
         
-        Integer status = HttpStatus.FORBIDDEN.value();
+        Integer status = HttpStatus.UNAUTHORIZED.value();
 
         // Irá retornar o erro 401
         response.setStatus(status);
         response.setContentType("application/json");
         
-        ErrorResponse errorResponse = new ErrorResponse(status, "E-mail ou senha inválidos");
+        ErrorResponse errorResponse = new ErrorResponse(status, "username ou senha inválidos");
         response.getWriter().append(errorResponse.toJson());
     }
 
