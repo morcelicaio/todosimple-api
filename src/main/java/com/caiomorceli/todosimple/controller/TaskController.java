@@ -41,12 +41,20 @@ public class TaskController {
         return ResponseEntity.ok(task);
     }
 
+    /*
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Task>> findAllTasksByUserId(@PathVariable Long userId){
         // Caso seja passado um id de usuário que não existe o servidor retorna um erro.
         this.userService.findUserById(userId);
 
         List<Task> tasks = this.taskService.findAllTasksByUserId(userId);
+        
+        return ResponseEntity.ok().body(tasks);
+    }           */
+
+    @GetMapping("/user")
+    public ResponseEntity<List<Task>> findAllTasksByUser(){                
+        List<Task> tasks = this.taskService.findAllTasksByUser();
         
         return ResponseEntity.ok().body(tasks);
     }
