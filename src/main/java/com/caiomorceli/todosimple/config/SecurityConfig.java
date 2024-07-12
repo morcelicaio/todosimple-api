@@ -20,6 +20,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.caiomorceli.todosimple.security.JWTAuthenticationFilter;
+import com.caiomorceli.todosimple.security.JWTAuthorizationFilter;
 import com.caiomorceli.todosimple.security.JWTUtil;
 
 // Classe de configuração principal de autenticação
@@ -65,6 +66,7 @@ public class SecurityConfig {
                                     .authenticationManager(authenticationManager);
 
         httpRequest.addFilter(new JWTAuthenticationFilter(this.authenticationManager, this.jwtUtil));
+        httpRequest.addFilter(new JWTAuthorizationFilter(this.authenticationManager, this.jwtUtil, this.userDetailsService));
 
         // A política de sessão é de não salvar a sessão. Sem estado (STATELESS).
         httpRequest.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
