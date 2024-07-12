@@ -14,6 +14,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.validation.FieldError;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.caiomorceli.todosimple.service.exception.AuthorizationException;
 import com.caiomorceli.todosimple.service.exception.DataBindingViolationException;
 import com.caiomorceli.todosimple.service.exception.ObjectNotFoundException;
 
@@ -67,7 +69,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
 
         log.error(errorMessage, exception);     // @Slf4j  captura esse log.
         
-        return buildErrorResponse(exception, errorMessage, HttpStatus.INTERNAL_SERVER_ERROR, request);
+        return this.buildErrorResponse(exception, errorMessage, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
 
@@ -82,7 +84,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
         String errorMessage = dataIntegrityViolationException.getMostSpecificCause().getMessage();
         log.error("Erro ao salvar. Entidade com problema de integridade: " + errorMessage, dataIntegrityViolationException);
         
-        return buildErrorResponse(dataIntegrityViolationException, errorMessage, HttpStatus.CONFLICT, request);
+        return this.buildErrorResponse(dataIntegrityViolationException, errorMessage, HttpStatus.CONFLICT, request);
     }
 
 
@@ -94,7 +96,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
         
         log.error("Falhou ao validar o elemento", constraintViolationException);
         
-        return buildErrorResponse(constraintViolationException, HttpStatus.UNPROCESSABLE_ENTITY, request);
+        return this.buildErrorResponse(constraintViolationException, HttpStatus.UNPROCESSABLE_ENTITY, request);
     }
 
 
@@ -103,9 +105,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
     public ResponseEntity<Object> handleObjectNotFoundException(ObjectNotFoundException objectNotFoundException,
                                                                 WebRequest request) {
         
-            log.error("Falhou ao buscar o elemento solicitado", objectNotFoundException);
+            log.error("Falhou ao buscar o elemento solicitado.", objectNotFoundException);
         
-        return buildErrorResponse(objectNotFoundException, HttpStatus.NOT_FOUND, request);
+        return this.buildErrorResponse(objectNotFoundException, HttpStatus.NOT_FOUND, request);
     }
 
 
@@ -114,15 +116,46 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler imple
     public ResponseEntity<Object> handleDataBindingViolationException(DataBindingViolationException dataBindingViolationException,
                                                                     WebRequest request) {
         
-        log.error("Failed to save entity with associated data", dataBindingViolationException);
+        log.error("Falha ao salvar entidade com dados associados.", dataBindingViolationException);
         
-        return buildErrorResponse(dataBindingViolationException, HttpStatus.CONFLICT, request);
+        return this.buildErrorResponse(dataBindingViolationException, HttpStatus.CONFLICT, request);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException authenticationException,
+                                                                WebRequest request){
+                    
+        log.error("Erro de autenticação", authenticationException);
+
+        return this.buildErrorResponse(authenticationException, HttpStatus.UNAUTHORIZED, request);
     }
 
 
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException accessDeniedException,
+                                                                WebRequest request){
+                    
+        log.error("Erro de autenticaçãou ou autorização", accessDeniedException);
+        
+        return this.buildErrorResponse(accessDeniedException, HttpStatus.FORBIDDEN, request);
+    }
+
+
+    @ExceptionHandler(AuthorizationException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ResponseEntity<Object> handleAuthorizationException(AuthorizationException authorizationException,
+                                                                WebRequest request){
+                    
+        log.error("Erro de autorização", authorizationException);
+        
+        return this.buildErrorResponse(authorizationException, HttpStatus.FORBIDDEN, request);
+    }
+
 
     private ResponseEntity<Object> buildErrorResponse(Exception exception, HttpStatus httpStatus, WebRequest request) {
-        return buildErrorResponse(exception, exception.getMessage(), httpStatus, request);
+        return this.buildErrorResponse(exception, exception.getMessage(), httpStatus, request);
     }
 
 

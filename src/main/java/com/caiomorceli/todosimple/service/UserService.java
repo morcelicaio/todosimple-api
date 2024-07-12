@@ -1,10 +1,12 @@
 package com.caiomorceli.todosimple.service;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.caiomorceli.todosimple.model.User;
 import com.caiomorceli.todosimple.model.enums.ProfileEnum;
 import com.caiomorceli.todosimple.repositorie.UserRepository;
+import com.caiomorceli.todosimple.security.UserSpringSecurity;
+import com.caiomorceli.todosimple.service.exception.AuthorizationException;
 import com.caiomorceli.todosimple.service.exception.DataBindingViolationException;
 import com.caiomorceli.todosimple.service.exception.ObjectNotFoundException;
 
@@ -24,7 +28,16 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
    
-    public User findUserById(Long id){
+    public User findUserById(Long id){        
+        // Recupera o usuário que está nesse momento no contexto da aplicação.
+        UserSpringSecurity userSpringSecurity = authenticated();
+        
+        // verifica se o usuário está logado ou se não é um usuário com perfil de administrador e se não está buscando pelo seu próprio ID.
+        if(!Objects.nonNull(userSpringSecurity) || !userSpringSecurity.hasRole(ProfileEnum.ADMIN) && !id.equals(userSpringSecurity.getId())){  
+            // Se não estiver, lança a exceção de acesso negado.
+            throw new AuthorizationException("Acesso negado!");
+        }
+
         Optional<User> user = this.userRepository.findById(id);
         
         return user.orElseThrow(() -> new ObjectNotFoundException(
@@ -67,5 +80,16 @@ public class UserService {
                 // Não exclui caso o usuário tenha tarefas relacionadas a ele.
                 throw new DataBindingViolationException("Não é possível excluir pois há entidades (tarefas) relacionadas.");
             }
+    }
+
+    // O UserSpringSecurity é o usuário que está no contexto atual do Spring (É quem está logado no momento).
+    // Com o token passado é possível pegar no contexto quem está autenticado.
+    public static UserSpringSecurity authenticated(){
+        try{
+            UserSpringSecurity userSpringSecurity = (UserSpringSecurity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            return userSpringSecurity;
+        }   catch(Exception e){                
+                return null;
+        }
     }
 }
