@@ -54,6 +54,16 @@ public class JWTUtil {
         return false;
     }
 
+    public String getUsername(String token){        
+        Claims claims = this.getClaims(token);
+
+        if(Objects.nonNull(claims)){    // Token é valido
+            return claims.getSubject();
+        }
+
+        return null;
+    }
+
     // Transforma o token nos dados.
     // O Claim contém as informações relevantes de autenticação ou autorização.
     private Claims getClaims(String token){
