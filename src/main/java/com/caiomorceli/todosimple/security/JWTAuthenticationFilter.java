@@ -1,5 +1,6 @@
 package com.caiomorceli.todosimple.security;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.servlet.FilterChain;
@@ -17,7 +18,6 @@ import com.caiomorceli.todosimple.model.User;
 import com.exception.GlobalExceptionHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.jsonwebtoken.io.IOException;
 
 // Essa classe recebe o que cair na rota /login
 
@@ -48,8 +48,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             Authentication authentication = this.authenticationManager.authenticate(authToken);
             return authentication;
-        }   catch(Exception e){
-                throw new RuntimeException(e);
+        }   catch(IOException ioe){
+                throw new RuntimeException(ioe);
             }                
     }
 
