@@ -10,8 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import com.caiomorceli.todosimple.model.enums.ProfileEnum;
@@ -19,10 +18,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -32,20 +29,13 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
+// @Getter
+// @Setter
+// @EqualsAndHashCode
+@Data       // Substitui de uma vez as anotações @Getter, @Setter  e @EqualsAndHashCode.
 @Entity
 @Table(name = "user")
 public class User {
-
-    public interface CreateUser{ 
-
-    }
-
-    public interface UpdateUser{
-
-    }
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,15 +43,19 @@ public class User {
     private Long id;
 
     @Column(name = "username", length = 80, nullable = false, unique = true)
-    @NotNull(groups = CreateUser.class)  // Não aceita valor null no atributo.
-    @NotEmpty(groups = CreateUser.class) // Não aceita string vazia no atributo.
+    // @NotNull   // Não aceita valor null no atributo.
+    // @NotEmpty  // Não aceita string vazia no atributo.
+    // Apenas para String, substitui de uma vez as anotações @NotNull e @NotEmpty.
+    @NotBlank(message = "O username não pode ser vazio.")
     private String username;
 
     @Column(name = "password", length = 80, nullable = false)
     @JsonProperty(access = Access.WRITE_ONLY) // Atributo apenas de escrita. A api não retornará esse atributo no json.
-    @NotNull(groups = { CreateUser.class, UpdateUser.class })
-    @NotEmpty(groups = { CreateUser.class, UpdateUser.class })
-    @Size(groups = { CreateUser.class, UpdateUser.class }, min = 4, max = 50, message="A senha deve conter no mínimo 4 e no máximo 50 caracteres.") // O password deve ter no mínimo 7 e no máximo 50 caracteres.
+    // @NotNull   // Não aceita valor null no atributo.
+    // @NotEmpty  // Não aceita string vazia no atributo.
+    // Apenas para String, substitui de uma vez as anotações @NotNull e @NotEmpty.
+    @NotBlank(message = "O passowrd não pode ser vazio.")
+    @Size(min = 4, max = 80, message="A senha deve conter no mínimo 4 e no máximo 80 caracteres.")
     private String password;
 
     @OneToMany(mappedBy = "user")

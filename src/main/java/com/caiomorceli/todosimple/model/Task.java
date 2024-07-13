@@ -8,21 +8,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@EqualsAndHashCode
+// @Getter
+// @Setter
+// @EqualsAndHashCode
+@Data       // Substitui de uma vez as anotações @Getter, @Setter  e @EqualsAndHashCode.
 @Entity
 @Table(name = "task")
 public class Task {
@@ -37,8 +35,9 @@ public class Task {
     private User user;
 
     @Column(name = "description", length = 250, nullable = false)
-    @NotNull   // Não aceita valor null no atributo.
-    @NotEmpty  // Não aceita string vazia no atributo.
+    // @NotNull   // Não aceita valor null no atributo.
+    // @NotEmpty  // Não aceita string vazia no atributo.
+    @NotBlank   // Apenas para String, substitui de uma vez as anotações @NotNull e @NotEmpty.
     @Size(min = 1, max = 250)
     private String description;
 }
