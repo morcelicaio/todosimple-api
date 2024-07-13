@@ -1,4 +1,4 @@
-package com.caiomorceli.todosimple.repositorie;
+package com.caiomorceli.todosimple.repository;
 
 import java.util.List;
 
@@ -6,11 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.caiomorceli.todosimple.model.Task;
+import com.caiomorceli.todosimple.model.projection.TaskProjection;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     // via função do Spring
-    List<Task> findByUser_Id(Long id);
+    List<TaskProjection> findByUser_Id(Long id);
 
     // via JPQL com passagem de parâmetro
     // @Query(value = "SELECT t FROM Task t WHERE t.user.id = :user_id")

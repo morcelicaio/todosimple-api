@@ -1,4 +1,4 @@
-package com.caiomorceli.todosimple.repositorie;
+package com.caiomorceli.todosimple.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
