@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.caiomorceli.todosimple.model.Task;
 import com.caiomorceli.todosimple.model.User;
 import com.caiomorceli.todosimple.model.enums.ProfileEnum;
-import com.caiomorceli.todosimple.repositorie.TaskRepository;
+import com.caiomorceli.todosimple.model.projection.TaskProjection;
+import com.caiomorceli.todosimple.repository.TaskRepository;
 import com.caiomorceli.todosimple.security.UserSpringSecurity;
 import com.caiomorceli.todosimple.service.exception.AuthorizationException;
 import com.caiomorceli.todosimple.service.exception.DataBindingViolationException;
@@ -57,7 +58,7 @@ public class TaskService {
     }       */
 
     // Busca apenas do usuário que está logado e não mais pelo id.
-    public List<Task> findAllTasksByUser(){
+    public List<TaskProjection> findAllTasksByUser(){
         // Recupera o usuário que está no contexto da aplicação (está logado).        
         UserSpringSecurity userSpringSecurity = UserService.authenticated();
 
@@ -67,7 +68,7 @@ public class TaskService {
         }
 
         // Utiliza o id do usuário que está logado para fazer a busca.
-        List<Task> tasks = this.taskRepository.findByUser_Id(userSpringSecurity.getId());
+        List<TaskProjection> tasks = this.taskRepository.findByUser_Id(userSpringSecurity.getId());
         
         return tasks;
     }

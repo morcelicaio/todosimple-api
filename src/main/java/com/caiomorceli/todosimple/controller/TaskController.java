@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.caiomorceli.todosimple.model.Task;
+import com.caiomorceli.todosimple.model.projection.TaskProjection;
 import com.caiomorceli.todosimple.service.TaskService;
-import com.caiomorceli.todosimple.service.UserService;
 
 @RestController
 @RequestMapping("/task")
@@ -30,8 +30,8 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @Autowired
-    private UserService userService;
+    //@Autowired
+    //private UserService userService;
 
     @GetMapping("/{id}")
     public ResponseEntity<Task> findTaskById(@PathVariable Long id){
@@ -53,8 +53,8 @@ public class TaskController {
     }           */
 
     @GetMapping("/user")
-    public ResponseEntity<List<Task>> findAllTasksByUser(){                
-        List<Task> tasks = this.taskService.findAllTasksByUser();
+    public ResponseEntity<List<TaskProjection>> findAllTasksByUser(){                
+        List<TaskProjection> tasks = this.taskService.findAllTasksByUser();
         
         return ResponseEntity.ok().body(tasks);
     }
