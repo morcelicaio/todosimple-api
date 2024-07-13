@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,8 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.caiomorceli.todosimple.model.User;
+import com.caiomorceli.todosimple.model.dto.UserCreateDTO;
+import com.caiomorceli.todosimple.model.dto.UserUpdateDTO;
 import com.caiomorceli.todosimple.model.enums.ProfileEnum;
-import com.caiomorceli.todosimple.repositorie.UserRepository;
+import com.caiomorceli.todosimple.repository.UserRepository;
 import com.caiomorceli.todosimple.security.UserSpringSecurity;
 import com.caiomorceli.todosimple.service.exception.AuthorizationException;
 import com.caiomorceli.todosimple.service.exception.DataBindingViolationException;
@@ -91,5 +95,24 @@ public class UserService {
         }   catch(Exception e){                
                 return null;
         }
+    }
+
+
+    public User fromDTO(@Valid UserCreateDTO userCreateDTO){
+        User user = new User();
+        
+        user.setUsername(userCreateDTO.getUsername());
+        user.setPassword(userCreateDTO.getPassword());
+
+        return user;
+    }
+
+    public User fromDTO(@Valid UserUpdateDTO userUpdateDTO){
+        User user = new User();
+        
+        user.setId(userUpdateDTO.getId());        
+        user.setPassword(userUpdateDTO.getPassword());
+
+        return user;
     }
 }
