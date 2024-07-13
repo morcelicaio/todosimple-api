@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.caiomorceli.todosimple.model.User;
-import com.caiomorceli.todosimple.repositorie.UserRepository;
+import com.caiomorceli.todosimple.repository.UserRepository;
 import com.caiomorceli.todosimple.security.UserSpringSecurity;
 
 @Service
