@@ -13,6 +13,9 @@ public class WebConfig implements WebMvcConfigurer {
     
     // Liberado para conexão de qualquer local (configuração simples). 
     public void addCorsMappings(CorsRegistry registry){
-        registry.addMapping("/**");
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedHeaders("*")
+                .allowedMethods("GET", "PUT", "POST", "PATCH", "DELETE", "OPTIONS");
     }
 }
