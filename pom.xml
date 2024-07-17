@@ -103,6 +103,9 @@
 
 	</dependencies>
 
+	<!-- Para o build gerar um arquivo jar -->
+	<packaging>jar</packaging>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -110,6 +113,8 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<!-- Nome do arquivo jar que será gerado no build -->
+		<finalName>todosimpleapp</finalName>
 	</build>
 
 </project>

@@ -1,0 +1,11 @@
+# Ignorados para subir para o docker.
+
+**/target/
+**/docs/
+**/view/
+**/.git
+**/README.md
+**/CITATION.cff
+**/LICENSE
+**/.vscode
+**/.editorconfig
